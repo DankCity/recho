@@ -25,7 +25,7 @@ deploy:
   server: https://pypi.python.org/pypi
   user: levinoecker
   password:
-    secure:
+    secure: kSyIv6jfd2ON5XtyCF3GiQaJZhZrbYZypAOLo+u0ap3sZjqeIQ5m+Fvf6eMsDneEt8yDFRgNPQ5R280zfFD5xdy4Xqgwe74wdsrF4klVCbfzWSqlK12NSRBOHuuMVlqjRePlxsn4soSMIFB58Muvq3C+3uvgp39V7qRfebiP0oZMr0Y8bxH8IHD/lgCs83V4doNuQRywVXJIaNU4L9B0hVw73zAChI90BB4dhvIBUTlWQW8nACSVC1TMVy4wkYgnHXa4F4wSV7gel/qUSXT9WJ6DhzWlLHBaR0KUGUmTc6GdcQlMdXBttKtaHzwNd8Z/oThsC6mIhYAm7z43Gh3S3GmXJrI7zHwxTyvF6ek4Yaf4hgPyPWbLfS6yvVdhfv3OYYrjz5BkvM+Do/JN2NEvNGzGbJZg6BEoHe9UxUHcKznWxwvPNnrJryjS/0qiywrhtp8rhPWybdFpTguS9K7YLoApR+r/F5YawKA+E9W7L0y93E/TRve+raX3qH4euas28N9LDMqppInlAzAgSrz+N5T47ITQHBIzln/5wihH9isfD/o/eQweOXD07n/pSw5v4Kmyi653C4bXC/vGKEwSRn2Qb76nJfzG2jMaFUnwPwLdpIZohRM4qDW/SGFvllgPlMsoiwTZZrGyr+Q4zoEqso6SVmiN6K8HqPlz5YY98Yc=
   distributions: sdist bdist_wheel
   on:
     branch: master
