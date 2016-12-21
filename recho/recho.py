@@ -21,7 +21,7 @@ def get_reddit_posts_since(redditor_name, timestamp):
     reddit = praw.Reddit(user_agent=build_user_agent())
     new_comments = list()
     for comment in reddit.get_redditor(redditor_name).get_comments('week'):
-        if timestamp > dt.fromtimestamp(comment.created):
+        if timestamp > dt.utcfromtimestamp(comment.created_utc):
             break
 
         new_comments.append(comment)
