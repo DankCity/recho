@@ -1,6 +1,6 @@
 import os
 import argparse
-from datetime import timedelta, datetime as dt
+from datetime import datetime as dt
 from configparser import ConfigParser
 
 # import appdirs
@@ -11,7 +11,6 @@ CONFIG_NAME = '.recho.ini'
 
 TS_NAME = '.recho_timestamp'
 TS_FILEPATH = os.path.join(os.path.dirname(__file__), TS_NAME)
-EST = timedelta(seconds=7200)
 
 
 class RechoError(Exception):
@@ -44,7 +43,7 @@ def get_last_seen():
     """ Return the last time a check was done
     """
     if not os.path.exists(TS_FILEPATH):
-        last_seen = dt.utcnow() + EST
+        last_seen = dt.utcnow()
     else:
         with open(TS_FILEPATH, 'r') as r:
             last_seen = dt.fromtimestamp(float(r.read()))
@@ -70,6 +69,5 @@ def main():
         post_to_slack(config['slack'], comments)
 
     # Write new timestamp
-    new_ts = (dt.now() + EST).timestamp()
     with open(TS_FILEPATH, 'w') as w:
-        w.write(str(new_ts))
+        w.write(str(dt.utcnow().timestamp()))
