@@ -8,7 +8,7 @@ python:
 - '3.3'
 - '3.4'
 - '3.5'
-- 3.6.0b1
+- '3.6'
 - pypy
 - pypy3
 install:
@@ -28,6 +28,6 @@ deploy:
     secure: eYC3U3mK/aC3LqYQzLKkFgw0BFDy7IaQtzbRxvBeBJIWGbym9Hh/KuwKEolRXEXxF8Q09ACdMrbl0T0fshh3bM4S99XOoPGvWC1Blu6S1XwEEpLD4G2s79GRzFIOWXl9y1gY45YnmGjAcVTFWDMMRqT3v7gCyXVU8pvJrCM0MWfUGOa7GCA7rLTQPNIcVUcYIF9NqsFYKXCsUBXD1lpyNT0Ke53QI2/fx8N7VxhZ+ksstxmQFbjGKUtLJNAjtFkw7w8A4o7xpxlKMPtl+G2lw4JR6ORr6ZUmXwER3C6hs+mfQgHLxso+ECIPFQRF4ku9a/LfDTcxV72H5lfO3cufo1WHofscLJLs6tgY+C4ioSq87MIThWXx57d4IusgiqTYF9Y/PiJjrSGoUDTSxaDKf+ZB9INHqoxtr9so56rFi96+6WmpvqGKVsowXsxril8+2KUQWgmIp/qPQIt5a/IArIOaqtLrQluKsn2jyHmn/9UmDu5O52gyHJpQmf9zLI2ad3aFtKkLxjENmiIqRfgN8uWeMnw/LqGcNm4vmN25QAEOLj92FGx5Evs/QKFKGpYHZK+vEa4JAliGldF0wpYlTIC735TrFSPR18gb5m3WEXaelx0CwcH+ZItkMvX0XudcDGYQbxwVHCTQgNY8EPPCrDomhxRoMXbk6RSsPQxeqzw=
   distributions: sdist bdist_wheel
   on:
-    branch: fix-deploy
+    branch: master
     tags: true
     python: '3.4'
