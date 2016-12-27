@@ -62,11 +62,11 @@ def main():
     last_seen = get_last_seen()
 
     # Get comments from reddit
-    comments = get_reddit_posts_since(args.redditor, last_seen)
+    activity = get_reddit_posts_since(args.redditor, last_seen)
 
-    if comments:
+    if activity:
         # Post posts to slack
-        post_to_slack(config['slack'], comments)
+        post_to_slack(config['slack'], activity)
 
     # Write new timestamp
     with open(TS_FILEPATH, 'w') as w:
