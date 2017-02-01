@@ -25,14 +25,14 @@ def get_reddit_posts_since(redditor_name, timestamp):
 
     # Get comment activity
     for comment in redditor.get_comments(time='week'):
-        if timestamp > dt.utcfromtimestamp(comment.created_utc):
+        if timestamp >= dt.utcfromtimestamp(comment.created_utc):
             break
 
         activity.append(RedditComment(comment))
 
     # Get submitted post activity
     for submission in redditor.get_submitted(time='week'):
-        if timestamp > dt.utcfromtimestamp(submission.created_utc):
+        if timestamp >= dt.utcfromtimestamp(submission.created_utc):
             break
 
         activity.append(RedditSubmission(submission))
@@ -42,12 +42,18 @@ def get_reddit_posts_since(redditor_name, timestamp):
 
 def post_to_slack(slack_config, posts):
     """ Post the given post or comment to the configured slack channel
+
+        returns timestamp of the last posted message
     """
     slack = Slacker(slack_config['token'])
 
+    last_timestamp = None
     for post in posts:
         message = format_for_slack(post)
         slack.chat.post_message(slack_config['channel'], message, as_user=True)
+        last_timestamp = dt.utcfromtimestamp(post.created_utc)
+
+    return last_timestamp
 
 
 def format_for_slack(comment):
@@ -58,9 +64,9 @@ def format_for_slack(comment):
                   "*Permalink*: `{permalink}`\n"
                   "{text}")
 
-    user_name = comment.author
-    thread = comment.title[:75]
-    permalink = comment.permalink
-    text = comment.text
+    user_name = comment.author  # pylint: disable=W0612
+    thread = comment.title[:75]  # pylint: disable=W0612
+    permalink = comment.permalink  # pylint: disable=W0612
+    text = comment.text  # pylint: disable=W0612
 
     return slack_post.format(**locals())
