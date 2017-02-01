@@ -45,7 +45,7 @@ def get_last_seen():
     if not os.path.exists(TS_FILEPATH):
         last_seen = dt.utcnow()
     else:
-        with open(TS_FILEPATH, 'r') as r:
+        with open(TS_FILEPATH, 'r') as r:  # pylint: disable=C0103
             last_seen = dt.fromtimestamp(float(r.read()))
 
     return last_seen
@@ -61,13 +61,13 @@ def main():
     # Get last timestamp
     last_seen = get_last_seen()
 
-    # Get comments from reddit
-    activity = get_reddit_posts_since(args.redditor, last_seen)
+    # Get new comments and threads from reddit
+    new_posts = get_reddit_posts_since(args.redditor, last_seen)
 
-    if activity:
-        # Post posts to slack
-        post_to_slack(config['slack'], activity)
+    if new_posts:
+        # Post new comments and threads to slack
+        latest_timestamp = post_to_slack(config['slack'], new_posts)
 
-    # Write new timestamp
-    with open(TS_FILEPATH, 'w') as w:
-        w.write(str(dt.utcnow().timestamp()))
+        # Write new timestamp
+        with open(TS_FILEPATH, 'w') as w:  # pylint: disable=C0103
+            w.write(str(latest_timestamp.timestamp()))

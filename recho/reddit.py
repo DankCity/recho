@@ -2,7 +2,7 @@ class UnsupportedSubmissionError(Exception):
     pass
 
 
-class RedditBase(object):
+class RedditBase(object):  # pylint: disable=R0903
     """ Base model for Reddit Post and Comment objects from Praw
     """
     def __init__(self, obj):
