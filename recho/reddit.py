@@ -41,8 +41,9 @@ class RedditSubmission(RedditBase):
     def text(self):
         """ Returns the text of the
         """
-        if hasattr(self._obj, 'selftext') and self._obj.selftext:
-            return ">>>" + self._obj.selftext
+        if hasattr(self._obj, 'selftext'):
+            text = self._obj.selftext if self._obj.selftext else " <no text>"
+            return ">>> " + text
         elif hasattr(self._obj, 'preview') and 'images' in self._obj.preview:
             return self._obj.preview['images'][0]['source']['url']
         else:
