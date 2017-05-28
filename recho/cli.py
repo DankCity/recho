@@ -1,10 +1,11 @@
 import os
 import argparse
 from datetime import datetime as dt
+
+from raven import Client
 from configparser import ConfigParser
 
-# import appdirs
-
+from recho import __version__ as recho_version
 from recho.recho import get_reddit_posts_since, post_to_slack
 
 CONFIG_NAME = '.recho.ini'
@@ -58,16 +59,25 @@ def main():
     # Load config
     config = load_config()
 
-    # Get last timestamp
-    last_seen = get_last_seen()
+    try:
+        # Get last timestamp
+        last_seen = get_last_seen()
 
-    # Get new comments and threads from reddit
-    new_posts = get_reddit_posts_since(args.redditor, last_seen)
+        # Get new comments and threads from reddit
+        new_posts = get_reddit_posts_since(args.redditor, last_seen)
 
-    if new_posts:
-        # Post new comments and threads to slack
-        latest_timestamp = post_to_slack(config['slack'], new_posts)
+        if new_posts:
+            # Post new comments and threads to slack
+            latest_timestamp = post_to_slack(config['slack'], new_posts)
 
-        # Write new timestamp
-        with open(TS_FILEPATH, 'w') as w:  # pylint: disable=C0103
-            w.write(str(latest_timestamp.timestamp()))
+            # Write new timestamp
+            with open(TS_FILEPATH, 'w') as w:  # pylint: disable=C0103
+                w.write(str(latest_timestamp.timestamp()))
+    except:
+        # Log to sentry, if configured
+        if 'sentry' in config:
+            key, secret = config['sentry']['key'], config['sentry']['secret']
+            url = 'https://{0}:{1}@sentry.io/173123'.format(key, secret)
+            Client(url, release=recho_version).captureException()
+
+        raise
