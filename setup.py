@@ -13,10 +13,10 @@ with open(path.join(HERE, 'README.rst')) as f:
     LONG_DESCRIPTION = f.read()
 
 INSTALL_REQUIRES = [
-    'retry',
-    'appdirs==1.4.0',
     'configparser==3.5.0',
     'praw==3.6.0',
+    'retry',
+    'raven',
     'slacker==0.9.30',
 ]
 
