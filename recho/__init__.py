@@ -1,3 +1,3 @@
-from ._version import get_versions
-__version__ = get_versions()['version']
-del get_versions
+from pbr.version import VersionInfo
+
+__version__ = VersionInfo('recho').semantic_version().release_string()
