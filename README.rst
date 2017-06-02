@@ -18,13 +18,24 @@ more accessible
 .. |PythonVersions| image:: https://img.shields.io/pypi/pyversions/recho.svg
     :target: https://wiki.python.org/moin/Python2orPython3
 
+(Optional) Create a virtual environment
+=======================================
+Its useful to create a virtual environment for installing and running recho
+
+.. code-block:: bash
+
+    $ sudo pip install virtualenv
+    $ cd ~
+    $ virtualenv .venvrecho
+    $ source .venvrecho/bin/activate
+
 Installation
 ============
 Install from PyPI using pip:
 
 .. code-block:: bash
 
-    $ pip install recho
+    $ pip install --update recho
 
 Add the configuration file
 
@@ -44,3 +55,24 @@ Write the following into that file, adding your Slack token and channel
 
 Note that the channel name is without the hash.
 `general` instead of `#general`
+
+Running Recho
+=============
+
+Recho is designed for use with cron. Simply add an entry similar to the one below:
+
+.. code-block:: bash
+
+    $ sudo vi /etc/crontab
+
+If you use a virtual environment:
+
+.. code-block:: bash
+
+     * * * * * user source ~/.venvrecho/bin/activate && recho acidtwist
+
+Otherwise you can simply call recho directly
+
+.. code-block:: bash
+
+     * * * * * user recho acidtwist
