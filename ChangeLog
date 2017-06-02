@@ -1,0 +1,49 @@
+CHANGES
+=======
+
+* Fix setup.cfg formatting
+
+0.0.8
+-----
+
+* Switch from Versioneer to PBR for version mgmt
+* Add Sentry exception logging
+
+0.0.7
+-----
+
+* Fix case where submission doesn't include text
+
+0.0.6
+-----
+
+* Use last comment timestamp
+
+0.0.5
+-----
+
+* Switch back to master branch for deploy
+* Add support for tracking Reddit Submissions
+
+0.0.3
+-----
+
+* Re-do password in .travis.yml
+
+0.0.2
+-----
+
+* Fix UTC timestamp missmatch
+
+0.0.1
+-----
+
+* End to end working
+* Add universal wheel to setup.cfg
+* Add encrypted PyPI key to travis.yml
+* Initial project structure
+
+0.0.0
+-----
+
+* Initial commit
