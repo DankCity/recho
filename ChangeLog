@@ -1,6 +1,9 @@
 CHANGES
 =======
 
+* Update README with virtualenv instructions
+* Update classifiers for beta release
+* Fix timestamping
 * Fix setup.cfg formatting
 
 0.0.8
