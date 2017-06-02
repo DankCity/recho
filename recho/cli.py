@@ -1,4 +1,5 @@
 import os
+import json
 import argparse
 from datetime import datetime as dt
 
@@ -10,7 +11,7 @@ from recho.recho import get_reddit_posts_since, post_to_slack
 
 CONFIG_NAME = '.recho.ini'
 
-TS_NAME = '.recho_timestamp'
+TS_NAME = '.recho_timestamps'
 TS_FILEPATH = os.path.join(os.path.dirname(__file__), TS_NAME)
 
 
@@ -18,7 +19,7 @@ class RechoError(Exception):
     pass
 
 
-def get_args():
+def _get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'redditor', type=str,
@@ -28,7 +29,8 @@ def get_args():
     return parser.parse_args()
 
 
-def load_config():
+def _load_config():
+    """ Load the configuration file """
     config = ConfigParser()
     config_path = os.path.join(os.path.expanduser('~'), CONFIG_NAME)
 
@@ -40,28 +42,36 @@ def load_config():
     return config
 
 
-def get_last_seen():
-    """ Return the last time a check was done
-    """
+def _get_last_seen(redditor):
+    """ Return the last time a check was done """
     if not os.path.exists(TS_FILEPATH):
+        with open(TS_FILEPATH, 'w') as w:  # pylint: disable=C0103
+            w.write(json.dumps({}))
+
+    with open(TS_FILEPATH, 'r') as r:
+        timestamps = json.load(r)
+
+    if redditor not in timestamps:
         last_seen = dt.utcnow()
+        timestamps[redditor] = last_seen.timestamp()
+        with open(TS_FILEPATH, 'w') as w:  # pylint: disable=C0103
+            w.write(json.dumps(timestamps, indent=4, sort_keys=True))
     else:
-        with open(TS_FILEPATH, 'r') as r:  # pylint: disable=C0103
-            last_seen = dt.fromtimestamp(float(r.read()))
+        last_seen = dt.fromtimestamp(float(timestamps[redditor]))
 
     return last_seen
 
 
 def main():
     # Load CLI args
-    args = get_args()
+    args = _get_args()
 
     # Load config
-    config = load_config()
+    config = _load_config()
 
     try:
         # Get last timestamp
-        last_seen = get_last_seen()
+        last_seen = _get_last_seen(args.redditor)
 
         # Get new comments and threads from reddit
         new_posts = get_reddit_posts_since(args.redditor, last_seen)
@@ -71,8 +81,12 @@ def main():
             latest_timestamp = post_to_slack(config['slack'], new_posts)
 
             # Write new timestamp
+            with open(TS_FILEPATH, 'r') as r:  # pylint: disable=C0103
+                timestamps = json.load(r)
+
+            timestamps[args.redditor] = latest_timestamp.timestamp()
             with open(TS_FILEPATH, 'w') as w:  # pylint: disable=C0103
-                w.write(str(latest_timestamp.timestamp()))
+                w.write(json.dumps(timestamps, indent=4, sort_keys=True))
     except:
         # Log to sentry, if configured
         if 'sentry' in config:
