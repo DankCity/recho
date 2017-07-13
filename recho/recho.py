@@ -2,10 +2,24 @@ from sys import platform
 from datetime import datetime as dt
 
 import praw
+from retry import retry
 from slacker import Slacker
+from requests.exceptions import ConnectionError  # pylint: disable=redefined-builtin
 
 from recho import __version__ as recho_version
 from recho.reddit import RedditComment, RedditSubmission
+
+TIME_PERIOD = 'week'
+
+
+@retry(ConnectionError, tries=3, delay=1, backoff=2)
+def _get_comments(redditor):
+    return redditor.get_comments(time=TIME_PERIOD)
+
+
+@retry(ConnectionError, tries=3, delay=1, backoff=2)
+def _get_submitted(redditor):
+    return redditor.get_submitted(time=TIME_PERIOD)
 
 
 def build_user_agent():
@@ -24,14 +38,14 @@ def get_reddit_posts_since(redditor_name, timestamp):
     activity = list()
 
     # Get comment activity
-    for comment in redditor.get_comments(time='week'):
+    for comment in _get_comments(redditor):
         if timestamp >= dt.utcfromtimestamp(comment.created_utc):
             break
 
         activity.append(RedditComment(comment))
 
     # Get submitted post activity
-    for submission in redditor.get_submitted(time='week'):
+    for submission in _get_submitted(redditor):
         if timestamp >= dt.utcfromtimestamp(submission.created_utc):
             break
 

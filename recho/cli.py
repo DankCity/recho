@@ -48,8 +48,8 @@ def _get_last_seen(redditor):
         with open(TS_FILEPATH, 'w') as w:  # pylint: disable=C0103
             w.write(json.dumps({}))
 
-    with open(TS_FILEPATH, 'r') as r:
-        timestamps = json.load(r)
+    with open(TS_FILEPATH, 'r') as rfile:
+        timestamps = json.load(rfile)
 
     if redditor not in timestamps:
         last_seen = dt.utcnow()
