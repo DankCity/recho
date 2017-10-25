@@ -86,7 +86,7 @@ def main():
         last_seen = _get_last_seen(args.redditor, args.timestamp_file)
 
         # Get new comments and threads from reddit
-        new_posts = get_reddit_posts_since(args.redditor, last_seen)
+        new_posts = get_reddit_posts_since(args.redditor, last_seen)[:5]
 
         if new_posts:
             # Post new comments and threads to slack

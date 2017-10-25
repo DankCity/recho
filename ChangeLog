@@ -1,6 +1,11 @@
 CHANGES
 =======
 
+0.1.3
+-----
+
+* Add CLI flags
+
 0.1.2
 -----
 
@@ -16,6 +21,10 @@ CHANGES
 
 * Update classifiers for beta release
 * Fix timestamping
+
+0.0.9
+-----
+
 * Fix setup.cfg formatting
 
 0.0.8
@@ -39,10 +48,6 @@ CHANGES
 
 * Switch back to master branch for deploy
 * Add support for tracking Reddit Submissions
-
-0.0.3
------
-
 * Re-do password in .travis.yml
 
 0.0.2
