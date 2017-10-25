@@ -12,10 +12,10 @@ class RedditBase(object):  # pylint: disable=R0903
         return getattr(self._obj, name)
 
     def __str__(self):
-        return str(self)
+        return repr(self)
 
     def __repr__(self):
-        return "{0} -> {1}".format(self._obj.id, str(self))
+        return "{0} -> {1}".format(self._obj.id, str(self._obj)[:30])
 
 
 class RedditComment(RedditBase):
