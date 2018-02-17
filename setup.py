@@ -9,14 +9,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(HERE, 'README.rst')) as f:
     LONG_DESCRIPTION = f.read()
 
-
 setup(
     name="recho",
     author='Levi Noecker',
     author_email='levi.noecker@gmail.com',
     url='https://github.com/levi-rs/recho',
-    description=LONG_DESCRIPTION,
-    licence='MIT',
+    keywords='reddit slack bot slackbot recho chat chatbot',
+    description='repost Reddit activity from a user to Slack in near-realtime',
+    long_description=LONG_DESCRIPTION,
     packages=find_packages(),
     use_scm_version={'root': '.', 'relative_to': __file__},
     setup_requires=['setuptools_scm'],
@@ -26,7 +26,6 @@ setup(
         'raven',
         'slacker==0.9.30',
     ],
-    keywords='reddit slack bot slackbot recho chat chatbot',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
