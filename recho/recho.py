@@ -31,7 +31,7 @@ def get_posts_since(credentials, redditor_name, timestamp):
     activity = list()
 
     for new in reddit.redditor(redditor_name).new():
-        if dt.utcfromtimestamp(new.created_utc) < timestamp:
+        if dt.utcfromtimestamp(new.created_utc) <= timestamp:
             break
 
         if isinstance(new, Comment):
