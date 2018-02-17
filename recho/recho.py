@@ -1,15 +1,20 @@
 from sys import platform
 from datetime import datetime as dt
 
-import praw
 from retry import retry
 from slacker import Slacker
 from requests.exceptions import ConnectionError  # pylint: disable=redefined-builtin
+from praw.models.reddit.comment import Comment
+from praw.models.reddit.submission import Submission
 
 from recho import __version__ as recho_version
 from recho.reddit import RedditComment, RedditSubmission
 
 TIME_PERIOD = 'week'
+
+
+class RechoError(Exception):
+    pass
 
 
 @retry(ConnectionError, tries=3, delay=1, backoff=2)
@@ -30,26 +35,22 @@ def build_user_agent():
     return user_agent
 
 
-def get_reddit_posts_since(redditor_name, timestamp):
-    """ Yields all reddit posts since timestamp for redditor
+def get_reddit_posts_since(praw_client, redditor_name, timestamp):
+    """ Returns all reddit posts since timestamp for redditor
     """
-    reddit = praw.Reddit(user_agent=build_user_agent())
-    redditor = reddit.get_redditor(redditor_name)
     activity = list()
 
-    # Get comment activity
-    for comment in _get_comments(redditor):
-        if timestamp >= dt.utcfromtimestamp(comment.created_utc):
+    for new in praw_client.redditor(redditor_name).new():
+        if dt.utcfromtimestamp(new.created_utc) < timestamp:
             break
 
-        activity.append(RedditComment(comment))
-
-    # Get submitted post activity
-    for submission in _get_submitted(redditor):
-        if timestamp >= dt.utcfromtimestamp(submission.created_utc):
-            break
-
-        activity.append(RedditSubmission(submission))
+        if isinstance(new, Comment):
+            activity.append(RedditComment(new))
+        elif isinstance(new, Submission):
+            activity.append(RedditSubmission(new))
+        else:  # Unknown type
+            msg = "Unknown comment/submission type: {0}".format(type(new))
+            raise RechoError(msg)
 
     return sorted(activity, key=lambda x: x.created)
 

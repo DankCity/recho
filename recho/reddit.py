@@ -17,6 +17,10 @@ class RedditBase(object):  # pylint: disable=R0903
     def __repr__(self):
         return "{0} -> {1}".format(self._obj.id, str(self._obj)[:30])
 
+    @property
+    def created(self):
+        return self._obj.created_utc
+
 
 class RedditComment(RedditBase):
     """ Object model for Reddit comments

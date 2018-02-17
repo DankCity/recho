@@ -3,11 +3,13 @@ import json
 import argparse
 from datetime import datetime as dt
 
+import praw
 from raven import Client
 from configparser import ConfigParser
 
-from recho import __version__ as recho_version
-from recho.recho import get_reddit_posts_since, post_to_slack
+from . import __version__ as recho_version
+from .recho import get_reddit_posts_since, post_to_slack
+from .recho import build_user_agent
 
 CONFIG_NAME = '.recho.ini'
 TS_NAME = '.recho_timestamps'
@@ -74,6 +76,12 @@ def _get_last_seen(redditor, ts_path):
     return last_seen
 
 
+def _get_praw_client(client_id, client_secret):
+    return praw.Reddit(client_id=client_id,
+                       client_secret=client_secret,
+                       user_agent=build_user_agent())
+
+
 def main():
     # Load CLI args
     args = _get_args()
@@ -81,24 +89,29 @@ def main():
     # Load config
     config = _load_config(args.config)
 
+    # Get praw client
+    reddit = _get_praw_client(**config['praw'])
+
     try:
         # Get last timestamp
         last_seen = _get_last_seen(args.redditor, args.timestamp_file)
 
         # Get new comments and threads from reddit
-        new_posts = get_reddit_posts_since(args.redditor, last_seen)[:5]
+        new_posts = get_reddit_posts_since(reddit, args.redditor, last_seen)
 
-        if new_posts:
-            # Post new comments and threads to slack
-            latest_timestamp = post_to_slack(config['slack'], new_posts)
+        if not new_posts:
+            return
 
-            # Write new timestamp
-            with open(args.timestamp_file, 'r') as r:  # pylint: disable=C0103
-                timestamps = json.load(r)
+        # Post new comments and threads to slack
+        latest_timestamp = post_to_slack(config['slack'], new_posts)
 
-            timestamps[args.redditor] = latest_timestamp.timestamp()
-            with open(args.timestamp_file, 'w') as w:  # pylint: disable=C0103
-                w.write(json.dumps(timestamps, indent=4, sort_keys=True))
+        # Write new timestamp
+        with open(args.timestamp_file, 'r') as r:  # pylint: disable=C0103
+            timestamps = json.load(r)
+
+        timestamps[args.redditor] = latest_timestamp.timestamp()
+        with open(args.timestamp_file, 'w') as w:  # pylint: disable=C0103
+            w.write(json.dumps(timestamps, indent=4, sort_keys=True))
     except:
         # Log to sentry, if configured
         if 'sentry' in config:
