@@ -1,6 +1,0 @@
-configparser==3.5.0
-pbr>=2.0
-praw>=5.0.0
-retry
-raven
-slacker==0.9.30

@@ -101,7 +101,7 @@ def main():
         timestamps[args.redditor] = latest_timestamp.timestamp()
         with open(args.timestamp_file, 'w') as w:  # pylint: disable=C0103
             w.write(json.dumps(timestamps, indent=4, sort_keys=True))
-    except:
+    except Exception:
         # Log to sentry, if configured
         if 'sentry' in config:
             key, secret = config['sentry']['key'], config['sentry']['secret']

@@ -2,30 +2,18 @@ from sys import platform
 from datetime import datetime as dt
 
 import praw
-from retry import retry
 from slacker import Slacker
-from requests.exceptions import ConnectionError  # pylint: disable=redefined-builtin
 from praw.models.reddit.comment import Comment
 from praw.models.reddit.submission import Submission
 
-from recho import __version__ as recho_version
-from recho.reddit import RedditComment, RedditSubmission
+from . import __version__ as recho_version
+from .reddit import RedditComment, RedditSubmission
 
 TIME_PERIOD = 'week'
 
 
 class RechoError(Exception):
     pass
-
-
-@retry(ConnectionError, tries=3, delay=1, backoff=2)
-def _get_comments(redditor):
-    return redditor.get_comments(time=TIME_PERIOD)
-
-
-@retry(ConnectionError, tries=3, delay=1, backoff=2)
-def _get_submitted(redditor):
-    return redditor.get_submitted(time=TIME_PERIOD)
 
 
 def build_user_agent():
