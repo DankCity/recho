@@ -3,13 +3,11 @@ import json
 import argparse
 from datetime import datetime as dt
 
-import praw
 from raven import Client
 from configparser import ConfigParser
 
 from . import __version__ as recho_version
-from .recho import get_reddit_posts_since, post_to_slack
-from .recho import build_user_agent
+from .recho import get_posts_since, post_to_slack
 
 CONFIG_NAME = '.recho.ini'
 TS_NAME = '.recho_timestamps'
@@ -76,12 +74,6 @@ def _get_last_seen(redditor, ts_path):
     return last_seen
 
 
-def _get_praw_client(client_id, client_secret):
-    return praw.Reddit(client_id=client_id,
-                       client_secret=client_secret,
-                       user_agent=build_user_agent())
-
-
 def main():
     # Load CLI args
     args = _get_args()
@@ -89,15 +81,12 @@ def main():
     # Load config
     config = _load_config(args.config)
 
-    # Get praw client
-    reddit = _get_praw_client(**config['praw'])
-
     try:
         # Get last timestamp
         last_seen = _get_last_seen(args.redditor, args.timestamp_file)
 
         # Get new comments and threads from reddit
-        new_posts = get_reddit_posts_since(reddit, args.redditor, last_seen)
+        new_posts = get_posts_since(config['praw'], args.redditor, last_seen)
 
         if not new_posts:
             return

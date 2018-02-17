@@ -1,6 +1,7 @@
 from sys import platform
 from datetime import datetime as dt
 
+import praw
 from retry import retry
 from slacker import Slacker
 from requests.exceptions import ConnectionError  # pylint: disable=redefined-builtin
@@ -35,12 +36,13 @@ def build_user_agent():
     return user_agent
 
 
-def get_reddit_posts_since(praw_client, redditor_name, timestamp):
+def get_posts_since(credentials, redditor_name, timestamp):
     """ Returns all reddit posts since timestamp for redditor
     """
+    reddit = praw.Reddit(user_agent=build_user_agent(), **credentials)
     activity = list()
 
-    for new in praw_client.redditor(redditor_name).new():
+    for new in reddit.redditor(redditor_name).new():
         if dt.utcfromtimestamp(new.created_utc) < timestamp:
             break
 
@@ -81,7 +83,7 @@ def format_for_slack(comment):
 
     user_name = comment.author  # pylint: disable=W0612
     thread = comment.title[:75]  # pylint: disable=W0612
-    permalink = comment.permalink  # pylint: disable=W0612
+    permalink = 'https://www.reddit.com' + comment.permalink
     text = comment.text  # pylint: disable=W0612
 
     return slack_post.format(**locals())
