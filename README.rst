@@ -29,6 +29,17 @@ Its useful to create a virtual environment for installing and running recho
     $ virtualenv .venvrecho
     $ source .venvrecho/bin/activate
 
+Register Your App
+=================
+Register your app with Reddit, and jot down your Client ID and Secret
+`<https://ssl.reddit.com/prefs/apps>`_
+
+#. Click "create another app" button at the bottom
+#. Click "script" radio button
+#. Fill in the remaining boxes, the actual values don't matter
+#. Click create, and record Client ID and Secret
+
+
 Installation
 ============
 Install from PyPI using pip:
@@ -47,6 +58,10 @@ Add the configuration file
 Write the following into that file, adding your Slack token and channel
 
 .. code-block:: bash
+
+    [praw]
+    client_id: <Reddit Client ID>
+    client_secret: <Reddit Client Secret>
 
     [slack]
     # Follow instructions at https://my.slack.com/services/new/bot

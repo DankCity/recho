@@ -1,6 +1,14 @@
 CHANGES
 =======
 
+* Create praw client where it is used
+* Updated to praw >= 5.0.0
+
+0.1.4
+-----
+
+* Update PRAW version and \_\_str\_\_/\_\_repr\_\_ methods
+
 0.1.3
 -----
 
